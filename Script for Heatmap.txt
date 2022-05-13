@@ -1,0 +1,20 @@
+library(ggplot2)
+library(pheatmap)
+
+# read data
+heatmap=read.table("top100asv.txt",sep="\t",header=T,row.names = 1)
+
+rowgroup=read.table("taxon-phylum.txt",sep="\t",header=T,row.names = 1)
+colgroup=read.table("colname.txt",sep="\t",header=T,row.names = 1)
+
+#define color of legend
+ann_colors = list(Station = c("I302"="#5A2578","I309"="#F3DA0E","I313"="#04629D","I402"="#E6780F","I407"="#DD1D1B","I413"="#058F3E"),Depth = c("5m"="#CB181D","25m"="#EF3B2C","50m"="#FB6A4A","75m"="#FC9272","100m"="#FCBBA1","200m"="#6BAED6","500m"="#2171B5","1000m"="#08519C","2000m"="#08306B"),Biomarker=c("5m"="#CB181D","25m"="#EF3B2C","50m"="#FB6A4A","75m"="#FC9272","100m"="#FCBBA1","200m"="#6BAED6","500m"="#2171B5","1000m"="#08519C","2000m"="#08306B","none"="white"),Taxon=c("Actinobacteriota: Acidimicrobiia"="#FF0000","Actinobacteriota: Actinobacteria"="#FF8000","Bacteroidota: Bacteroidia"="#FFFF00","Chloroflexi: Dehalococcoidia"="#FF0080","Cyanobacteria: Cyanobacteriia"="#00FF80","Deinococcota: Deinococci"="#FF3D3D","Desulfobacterota: Desulfuromonadia"="#FF7A7A","Firmicutes: Bacilli"="#FF00FF","Firmicutes: Clostridia"="#7AFFFF","Marinimicrobia_(SAR406_clade): Marinimicrobia_(SAR406_clade)"="#3DFFFF","Patescibacteria: Saccharimonadia"="#8000FF","Planctomycetota: Phycisphaerae"="#0000FF","Proteobacteria: Alphaproteobacteria"="#0080FF","Proteobacteria: Gammaproteobacteria"="#00FFFF","SAR324_clade(Marine_group_B): SAR324_clade(Marine_group_B)"="#80FF00"))
+
+#plot
+pheatmap(log((heatmap+1),2),
+         #cellwidth=15, cellheight=9,
+         cluster_cols=T,cluster_rows=T,scale="row",
+         annotation_col=colgroup,color = colorRampPalette(c("blue", "white", "firebrick"))(20),
+         annotation_row=rowgroup,fontsize_col = 12,fontsize_row = 8,fontsize=8,
+         annotation_colors =ann_colors,annotation_names_row = F,
+         annotation_names_col = F,show_colnames = T,cutree_cols = 6,angle_col = "45")

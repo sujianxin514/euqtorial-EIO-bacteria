@@ -1,0 +1,41 @@
+library("vegan")
+library("reshape2")
+library("gridExtra")
+library(grid)
+
+otu <- read.csv("Bacteria_NMDS.csv",header=T, row.names = 1) 
+
+comm <- otu[,-1:-14]
+comm[1:5, 1:14]
+
+# calculate Bray-Curtis distance among samples
+comm.bc.dist <- vegdist(comm, method = "bray")
+
+comm.bc.mds <- metaMDS(comm, dist = "bray")
+
+stressplot(comm.bc.mds)
+#str(comm.bc.mds) # gives stress value for plot
+comm.bc.mds$stress
+
+
+############################## community statistics ###################################
+library("vegan")
+library("RVAideMemoire") 
+
+otutable <- read.csv("Bacteria_NMDS.csv",header=T, row.names = 1)
+str(otutable)
+dist <- vegdist(otutable[,-1:-14], method = 'bray')
+#betadisper
+bd <- betadisper(dist, otutable$Depth)
+bd
+boxplot(bd)
+anova(bd)
+permutest(bd)
+TukeyHSD(bd)
+#adonis
+otutable.adonis <- adonis(otutable[,-1:-14] ~Depth, data=otutable, permutations = 999, method = 'bray')
+otutable.adonis
+
+#pairwise.perm.manova
+pairperm <- pairwise.perm.manova(dist, otutable$Depth, nperm=999, "bray")
+pairperm
